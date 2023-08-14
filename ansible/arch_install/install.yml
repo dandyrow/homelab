@@ -1,0 +1,72 @@
+---
+- name: Install Arch
+  hosts: all
+  become: true
+
+  roles:
+    - role: dandyrow.linux.disks
+      vars:
+        disks:
+          - dev_path: /dev/vdb
+            layout:
+              - fs_type: ext4
+                mount_path: /mnt
+          - dev_path: /dev/vda
+            layout:
+              - part_number: 1
+                part_fs_type: fat32
+                part_flags: [esp]
+                part_label: gpt
+                fs_type: vfat
+                fs_options: -F 32
+                mount_path: /mnt/boot
+
+  tasks:
+    - name: Run pacstrap to install arch
+      ansible.builtin.command:
+        cmd: pacstrap -K /mnt base {{ kernel | default('linux') }} ansible
+        creates: /mnt/etc
+
+    - name: Generate fstab content with genfstab command
+      register: fstab
+      changed_when: false
+      ansible.builtin.command: genfstab -U /mnt
+
+    - name: Save fstab
+      ansible.builtin.blockinfile:
+        path: /mnt/etc/fstab
+        block: |
+          # Generated during install, modifying could break your system!
+          {{ fstab.stdout }}
+        marker: "# {mark} ANSIBLE MANAGED BLOCK"
+
+    - name: Copy config playbook to new arch install
+      ansible.builtin.copy:
+        src: ./config
+        dest: /mnt/
+        owner: root
+        group: root
+        mode: "0755"
+        directory_mode: "0755"
+
+    - name: Install arch_install playbook requirements in arch_chroot
+      changed_when: "'Nothing to do.' not in requirements_output.stdout"
+      register: requirements_output
+      ansible.builtin.command: "arch-chroot /mnt ansible-galaxy install \
+        -r /config/requirements.yml"
+
+    - name: Run config playbook in arch-chroot environment
+      changed_when: false
+      register: config_output
+      ansible.builtin.command: "arch-chroot /mnt ansible-playbook \
+        -i /config/inventory.yml -c local \
+        -e @/config/var_files/{{ var_file_name }}.yml /config/config.yml"
+
+    - name: Display output from config playbook
+      ansible.builtin.debug:
+        msg: "{{ config_output.stdout }}"
+
+    - name: Delete config playbook from new arch install
+      ansible.builtin.file:
+        path: /mnt/config
+        state: absent

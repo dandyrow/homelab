@@ -1,0 +1,112 @@
+---
+- name: Configure a fresh arch install
+  hosts: all
+
+  pre_tasks:
+    - name: Setup extra user(s)
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        groups: "{{ item.groups | default(omit) }}"
+        append: "{{ item.append_groups | default(true) if item.groups is \
+          defined else omit }}"
+        home: "{{ item.home | default(omit) }}"
+        shell: "{{ item.shell | default(omit) }}"
+        create_home: "{{ item.create_home | default(true) }}"
+        password: "{{ item.password | default(omit) }}"
+      with_items: "{{ users }}"
+      when: users is defined
+
+  roles:
+    - role: dandyrow.linux.timezone
+      vars:
+        city: Dublin
+        region: Europe
+
+    - role: dandyrow.linux.locale
+      vars:
+        keymap: uk
+        lang: en_GB.UTF-8
+        locale: en_GB.UTF-8 UTF-8
+
+    - role: dandyrow.linux.systemd_networkd
+
+    - role: dandyrow.linux.systemd_boot
+      vars:
+        esp_path: /boot
+        auto_firmware: false
+        auto_entries: false
+        auto_update: true
+        editor: false
+        entry_title: arch
+
+    - role: dandyrow.archlinux.pacman
+
+    - role: dandyrow.archlinux.reflector
+      vars:
+        countries: [ United Kingdom ]
+        latest: 5
+        protocols: [ https ]
+        save_path: /etc/pacman.d/mirrorlist
+        sort: age
+
+    - role: dandyrow.linux.zsh
+      vars:
+        default_shell: true
+        xdg_directory: true
+
+    - role: dandyrow.linux.doas
+      vars:
+        doas_conf_lines: "{{ doas_conf_lines }}"
+        remove_sudo: true
+        remove_sudo_config: true
+        install_sudo_shim: true
+        non_root_user: "{{ non_root_user }}"
+
+    - role: dandyrow.linux.cloud_init
+      when: enable_cloud_init | default(false)
+      vars:
+        create_default_user: false
+        datasource_list:
+          - NoCloud
+          - ConfigDrive
+
+  tasks:
+    - name: Create hostname file
+      when: hostname is defined
+      ansible.builtin.lineinfile:
+        path: /etc/hostname
+        create: true
+        line: '{{ hostname }}'
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Ensure system is up to date
+      community.general.pacman:
+        update_cache: true
+        upgrade: true
+
+    - name: Install packages
+      community.general.pacman:
+        name: "{{ packages }}"
+
+    - name: Enabled sshd
+      when: enable_ssh | default(true)
+      ansiblebuiltin.service:
+        name: sshd
+        state: started
+        enabled: true
+
+    - name: Stow dotfiles for users
+      loop: "{{ users }}"
+      loop_control:
+        loop_var: user
+      when: user.dotfiles_to_install is defined
+      ansible.builtin.include_role:
+        name: dandyrow.linux.stow_dotfiles
+      vars:
+        dotfiles_remote_repo: "{{ user.dotfiles_repo }}"
+        dotfiles_repo_branch: "{{ user.dotfiles_repo_branch | default(omit) }}"
+        dotfiles_to_install: "{{ user.dotfiles_to_install }}"
+        ansible_become: true
+        ansible_become_user: "{{ user.name }}"
