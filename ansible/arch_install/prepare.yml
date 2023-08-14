@@ -1,0 +1,21 @@
+---
+- name: Prepare Arch ISO for Packer provisioning
+  hosts: all
+  tasks:
+    - name: Increase space on ISO using cowspace
+      ansible.posix.mount:
+        path: /run/archiso/cowspace
+        opts: remount,size=1G
+        state: remounted
+
+    - name: Update archlinux-keyring
+      community.general.pacman:
+        name:
+          - archlinux-keyring
+        update_cache: true
+        state: latest
+
+- name: Run install playbook
+  ansible.builtin.import_playbook: install.yml
+  vars:
+    var_file_name: pve_base_packer

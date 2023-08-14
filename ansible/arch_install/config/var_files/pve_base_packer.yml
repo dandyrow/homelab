@@ -1,0 +1,52 @@
+---
+enable_cloud_init: true
+non_root_user: dandyrow
+
+doas_conf_lines:
+  - permit persist :wheel
+
+packages:
+  - openssh
+  - qemu-guest-agent
+  - neovim
+  - gcc
+  - ripgrep
+  - zellij
+  - git
+  - zsh
+  - zsh-autosuggestions
+  - zsh-syntax-highlighting
+  - pkgfile
+  - starship
+  - neofetch
+  - ttf-firacode-nerd
+  - noto-fonts-emoji
+  - stow
+  - exa
+  - bat
+  - sl
+
+dotfiles_to_install:
+  - git
+  - zsh
+  - neofetch
+  - starship
+  - zellij
+  - neovim
+
+users:
+  - name: dandyrow
+    shell: /bin/zsh
+    groups: wheel
+    append: true
+    dotfiles_repo: https://github.com/dandyrow/dotfiles
+    dotfiles_repo_branch: neovim
+    dotfiles_to_install:
+      - zsh
+      - zellij
+      - neovim
+      - starship
+      - neofetch
+      - git
+  - name: root
+    shell: /bin/bash
