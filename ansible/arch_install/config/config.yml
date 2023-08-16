@@ -92,7 +92,7 @@
 
     - name: Enabled sshd
       when: enable_ssh | default(true)
-      ansiblebuiltin.service:
+      ansible.builtin.service:
         name: sshd
         state: started
         enabled: true
