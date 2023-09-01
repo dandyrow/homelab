@@ -60,7 +60,7 @@
       register: config_output
       ansible.builtin.command: "arch-chroot /mnt ansible-playbook \
         -i /config/inventory.yml -c local \
-        -e @/config/var_files/{{ var_file_name }}.yml /config/config.yml"
+        -e @/config/vars/{{ var_file_name }}.yml /config/config.yml"
 
     - name: Display output from config playbook
       ansible.builtin.debug:

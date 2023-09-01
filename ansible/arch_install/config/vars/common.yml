@@ -1,5 +1,4 @@
 ---
-enable_cloud_init: true
 non_root_user: dandyrow
 
 doas_conf_lines:
@@ -7,7 +6,6 @@ doas_conf_lines:
 
 packages:
   - openssh
-  - qemu-guest-agent
   - neovim
   - gcc
   - ripgrep
@@ -40,7 +38,7 @@ users:
     groups: wheel
     append: true
     dotfiles_repo: https://github.com/dandyrow/dotfiles
-    dotfiles_repo_branch: neovim
+    dotfiles_repo_branch: master
     dotfiles_to_install:
       - zsh
       - zellij

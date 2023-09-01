@@ -18,4 +18,4 @@
 - name: Run install playbook
   ansible.builtin.import_playbook: install.yml
   vars:
-    var_file_name: pve_base_packer
+    var_file_name: proxmox_template

@@ -3,6 +3,10 @@
   hosts: all
 
   pre_tasks:
+    - name: Include variables common across hosts
+      ansible.builtin.include_vars:
+        file: common.yml
+
     - name: Setup extra user(s)
       ansible.builtin.user:
         name: "{{ item.name }}"
@@ -88,7 +92,7 @@
 
     - name: Install packages
       community.general.pacman:
-        name: "{{ packages }}"
+        name: "{{ packages + (extra_packages | default([])) }}"
 
     - name: Enabled sshd
       when: enable_ssh | default(true)
