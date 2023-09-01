@@ -1,0 +1,7 @@
+---
+all:
+  hosts:
+    gnome:
+      ansible_host: 192.168.0.10
+      ansible_user: dandyrow
+      ansible_become_method: doas

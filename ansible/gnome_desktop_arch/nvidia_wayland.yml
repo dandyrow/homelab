@@ -1,0 +1,73 @@
+---
+- name: Install nvidia drivers
+  become: true
+  community.general.pacman:
+    name:
+      - nvidia
+    state: present
+
+- name: Mount boot filesystem
+  become: true
+  ansible.posix.mount:
+    path: /boot
+    src: /dev/vda1
+    fstype: vfat
+    state: mounted
+
+- name: Add DRM kernel parameter to boot entry
+  become: true
+  ansible.builtin.lineinfile:
+    path: /boot/loader/entries/arch.conf
+    regexp: ^options(.*)$
+    line: options\1 nvidia_drm.modeset=1
+    backrefs: true
+
+- name: Add Nvidia modules to mkinitcpio.conf
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/mkinitcpio.conf
+    regexp: ^MODULES=\((.*)\)$
+    line: 'MODULES=(\1 nvidia nvidia_modeset nvidia_uvm nvidia_drm)'
+    backrefs: true
+  register: mkinitcpio_output
+
+- name: Run mkinitcpio -P
+  become: true
+  ansible.builtin.command: mkinitcpio -P
+  when: mkinitcpio_output is changed
+
+- name: Create pacman hooks folder
+  become: true
+  ansible.builtin.file:
+    path: /etc/pacman.d/hooks
+    owner: root
+    group: root
+    mode: "0755"
+    state: directory
+
+- name: Copy Nvidia pacman hook
+  become: true
+  ansible.builtin.copy:
+    src: files/nvidia.hook
+    dest: /etc/pacman.d/hooks/nvidia.hook
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Copy modprobe
+  become: true
+  ansible.builtin.copy:
+    src: files/nvidia-power-management.conf
+    dest: /etc/modprobe.d/nvidia-power-management.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Link gdm rules to null
+  become: true
+  ansible.builtin.file:
+    src: /dev/null
+    dest: /etc/udev/rules.d/61-gdm.rules
+    owner: root
+    group: root
+    state: link

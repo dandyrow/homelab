@@ -1,0 +1,70 @@
+---
+- name: Install Gnome Desktop Environment on Arch Linux
+  hosts: gnome
+  tasks:
+    - name: Install packages
+      become: true
+      community.general.pacman:
+        name:
+          - alacritty
+          - cups
+          - flatpak
+          - gdm
+          - gnome-backgrounds
+          - gnome-browser-connector
+          - gnome-control-center
+          - gnome-online-accounts
+          - gnome-photos
+          - gnome-shell
+          - gnome-tweaks
+          - gparted
+          - gvfs
+          - gvfs-goa
+          - gvfs-gphoto2
+          - gvfs-mtp
+          - gvfs-nfs
+          - gvfs-smb
+          - hplip
+          - mutter
+          - nautilus
+          - papirus-icon-theme
+          - sushi
+          - xdg-user-dirs
+          - xdg-user-dirs-gtk
+          - xdg-utils
+        state: present
+
+    - name: Enable services
+      become: true
+      ansible.builtin.service:
+        name: "{{ item }}"
+        enabled: true
+      with_items:
+        - gdm
+        - cups
+
+    - name: Ensure flathub remote is present
+      community.general.flatpak_remote:
+        name: flathub
+        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+        method: user
+        state: present
+
+    - name: Install flatpaks
+      community.general.flatpak:
+        name:
+          - org.gnome.baobab
+          - org.gnome.Calculator
+          - org.gnome.Calendar
+          - org.gnome.clocks
+          - org.gnome.Extensions
+          - org.gnome.Photos
+          - org.gnome.SimpleScan
+          - org.mozilla.firefox
+          - com.github.tchx84.Flatseal
+        method: user
+        state: present
+
+    - name: Enable Wayland Gnome on NVidia GPUs
+      ansible.builtin.include_tasks: nvidia_wayland.yml
+      when: nvidia
