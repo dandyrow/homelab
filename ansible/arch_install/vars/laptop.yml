@@ -1,4 +1,6 @@
 ---
+var_file_name: laptop
+
 disks:
   - dev_path: /dev/nvme0n1
     layout:
