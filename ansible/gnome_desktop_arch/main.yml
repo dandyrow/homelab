@@ -67,4 +67,4 @@
 
     - name: Enable Wayland Gnome on NVidia GPUs
       ansible.builtin.include_tasks: nvidia_wayland.yml
-      when: nvidia
+      when: nvidia | default(false)
