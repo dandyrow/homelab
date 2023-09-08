@@ -1,0 +1,22 @@
+---
+disks:
+  - dev_path: /dev/nvme0n1
+    layout:
+      - part_number: 1
+        part_fs_type: fat32
+        part_flags: [esp]
+        part_label: gpt
+        part_name: esp
+        part_end: 250M
+        fs_type: vfat
+        fs_options: -F 32
+        mount_path: /mnt/boot
+        mount_uuid: true
+      - part_number: 2
+        part_fs_type: ext4
+        part_label: gpt
+        part_name: arch
+        part_start: 250M
+        fs_type: ext4
+        mount_path: /mnt
+        mount_uuid: true

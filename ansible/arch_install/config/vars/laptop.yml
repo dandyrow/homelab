@@ -1,0 +1,10 @@
+---
+use_network_manager: true
+
+extra_packages:
+  - intel-ucode
+  - linux_firmware
+  - mesa
+  - vulkan-intel
+
+use_swapfile: true

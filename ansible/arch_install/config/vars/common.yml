@@ -23,6 +23,7 @@ packages:
   - exa
   - bat
   - sl
+  - lf
 
 dotfiles_to_install:
   - git

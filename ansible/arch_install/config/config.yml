@@ -32,7 +32,17 @@
         lang: en_GB.UTF-8
         locale: en_GB.UTF-8 UTF-8
 
+    - role: dandyrow.linux.swapfile
+      vars:
+        swapfile_size: 8
+        swapfile_on: false
+      when: use_swapfile | default(false)
+
     - role: dandyrow.linux.systemd_networkd
+      when: not use_network_manager | default(false)
+
+    - role: dandyrow.linux.networkmanager
+      when: use_network_manager | default(false)
 
     - role: dandyrow.linux.systemd_boot
       vars:
@@ -47,9 +57,9 @@
 
     - role: dandyrow.archlinux.reflector
       vars:
-        countries: [ United Kingdom ]
+        countries: [United Kingdom]
         latest: 5
-        protocols: [ https ]
+        protocols: [https]
         save_path: /etc/pacman.d/mirrorlist
         sort: age
 

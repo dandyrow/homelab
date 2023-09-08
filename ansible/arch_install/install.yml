@@ -5,21 +5,6 @@
 
   roles:
     - role: dandyrow.linux.disks
-      vars:
-        disks:
-          - dev_path: /dev/vdb
-            layout:
-              - fs_type: ext4
-                mount_path: /mnt
-          - dev_path: /dev/vda
-            layout:
-              - part_number: 1
-                part_fs_type: fat32
-                part_flags: [esp]
-                part_label: gpt
-                fs_type: vfat
-                fs_options: -F 32
-                mount_path: /mnt/boot
 
   tasks:
     - name: Run pacstrap to install arch
