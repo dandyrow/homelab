@@ -1,10 +1,11 @@
 ---
+hostname: dans-spectre
 use_network_manager: true
+use_swapfile: true
 
 extra_packages:
   - intel-ucode
-  - linux_firmware
+  - linux-firmware
   - mesa
   - vulkan-intel
 
-use_swapfile: true

@@ -2,6 +2,7 @@
 non_root_user: dandyrow
 
 doas_conf_lines:
+  - permit nopass root   # Allow root to run commands as other users with doas
   - permit persist :wheel
 
 packages:
@@ -24,6 +25,7 @@ packages:
   - bat
   - sl
   - lf
+  - gnupg
 
 dotfiles_to_install:
   - git
@@ -38,6 +40,7 @@ users:
     shell: /bin/zsh
     groups: wheel
     append: true
+    password: "{{ dandyrow_password }}"  # Hand in password from ansible-playbook command
     dotfiles_repo: https://github.com/dandyrow/dotfiles
     dotfiles_repo_branch: master
     dotfiles_to_install:

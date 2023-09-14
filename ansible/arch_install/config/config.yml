@@ -17,6 +17,7 @@
         shell: "{{ item.shell | default(omit) }}"
         create_home: "{{ item.create_home | default(true) }}"
         password: "{{ item.password | default(omit) }}"
+        update_password: on_create
       with_items: "{{ users }}"
       when: users is defined
 
@@ -73,7 +74,7 @@
         doas_conf_lines: "{{ doas_conf_lines }}"
         remove_sudo: true
         remove_sudo_config: true
-        install_sudo_shim: true
+        install_doas_sudo_shim: true
         non_root_user: "{{ non_root_user }}"
 
     - role: dandyrow.linux.cloud_init
@@ -124,3 +125,4 @@
         dotfiles_to_install: "{{ user.dotfiles_to_install }}"
         ansible_become: true
         ansible_become_user: "{{ user.name }}"
+        ansible_become_method: doas

@@ -9,7 +9,7 @@ disks:
         part_flags: [esp]
         part_label: gpt
         part_name: esp
-        part_end: 250M
+        part_end: 250MiB
         fs_type: vfat
         fs_options: -F 32
         mount_path: /mnt/boot
@@ -18,7 +18,7 @@ disks:
         part_fs_type: ext4
         part_label: gpt
         part_name: arch
-        part_start: 250M
+        part_start: 250MiB
         fs_type: ext4
         mount_path: /mnt
         mount_uuid: true

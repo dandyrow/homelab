@@ -41,13 +41,15 @@
         -r /config/requirements.yml"
 
     - name: Run config playbook in arch-chroot environment
-      changed_when: false
       register: config_output
+      changed_when: "'changed=0' not in config_output.stdout"
       ansible.builtin.command: "arch-chroot /mnt ansible-playbook \
         -i /config/inventory.yml -c local \
+        -e \"dandyrow_password={{ lookup('env', 'DANDYROW_PASSWORD') | password_hash('sha512') }}\" \
         -e @/config/vars/{{ var_file_name }}.yml /config/config.yml"
 
     - name: Display output from config playbook
+      changed_when: config_output is changed
       ansible.builtin.debug:
         msg: "{{ config_output.stdout }}"
 
