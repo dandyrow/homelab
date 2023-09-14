@@ -11,7 +11,6 @@
           - flatpak
           - gdm
           - gnome-backgrounds
-          - gnome-browser-connector
           - gnome-control-center
           - gnome-online-accounts
           - gnome-photos
@@ -28,6 +27,7 @@
           - mutter
           - nautilus
           - papirus-icon-theme
+          - pacman-contrib
           - sushi
           - xdg-user-dirs
           - xdg-user-dirs-gtk
@@ -57,11 +57,13 @@
           - org.gnome.Calculator
           - org.gnome.Calendar
           - org.gnome.clocks
-          - org.gnome.Extensions
           - org.gnome.Photos
           - org.gnome.SimpleScan
           - org.mozilla.firefox
+          - org.mozilla.Thunderbird
           - com.github.tchx84.Flatseal
+          - com.mattjakeman.ExtensionManager
+          - com.valvesoftware.Steam
         method: user
         state: present
 
