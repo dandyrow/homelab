@@ -105,6 +105,9 @@
       community.general.pacman:
         name: "{{ packages + (extra_packages | default([])) }}"
 
+    - name: Regenerate initramfs
+      ansible.builtin.command: mkinitcpio -P
+
     - name: Enabled sshd
       when: enable_ssh | default(true)
       ansible.builtin.service:

@@ -4,16 +4,16 @@
   tasks:
     - name: Install packages
       become: true
+      become_method: doas
       community.general.pacman:
         name:
-          - alacritty
           - cups
           - flatpak
           - gdm
           - gnome-backgrounds
+          - gnome-console
           - gnome-control-center
           - gnome-online-accounts
-          - gnome-photos
           - gnome-shell
           - gnome-tweaks
           - gparted
@@ -29,6 +29,7 @@
           - papirus-icon-theme
           - pacman-contrib
           - sushi
+          - xdg-desktop-portal-gnome
           - xdg-user-dirs
           - xdg-user-dirs-gtk
           - xdg-utils
@@ -36,6 +37,7 @@
 
     - name: Enable services
       become: true
+      become_method: doas
       ansible.builtin.service:
         name: "{{ item }}"
         enabled: true
@@ -64,6 +66,7 @@
           - com.github.tchx84.Flatseal
           - com.mattjakeman.ExtensionManager
           - com.valvesoftware.Steam
+          - net.lutris.Lutris
         method: user
         state: present
 
