@@ -1,12 +1,26 @@
 ---
-- name: Disable enterprise repository
+- name: Disable pve enterprise repository
   ansible.builtin.apt_repository:
     repo: "deb https://enterprise.proxmox.com/debian/pve
       {{ ansible_distribution_release }} pve-enterprise"
     state: absent
 
-- name: Enable non subscription repository
+- name: Disable ceph-quincy enterprise repository
+  ansible.builtin.apt_repository:
+    repo: "deb https://enterprise.proxmox.com/debian/ceph-quincy
+      {{ ansible_distribution_release }} enterprise"
+    state: absent
+
+- name: Enable pve no-subscription repository
   ansible.builtin.apt_repository:
     repo: "deb http://download.proxmox.com/debian/pve
       {{ ansible_distribution_release }} pve-no-subscription"
+    filename: pve
+    state: present
+
+- name: Enable ceph-quincy no-subscription repository
+  ansible.builtin.apt_repository:
+    repo: "deb http://download.proxmox.com/debian/ceph-quincy
+      {{ ansible_distribution_release }} no-subscription"
+    filename: ceph
     state: present

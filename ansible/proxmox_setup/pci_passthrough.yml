@@ -62,6 +62,7 @@
     group: root
     mode: "0755"
   register: passthrough_result
+  when: gpu_hex_id is defined
 
 - name: Regenerate initramfs
   ansible.builtin.command: update-initramfs -u -k all
