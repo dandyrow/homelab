@@ -1,0 +1,9 @@
+---
+- name: Setup Proxmox for PCI passthrough
+  hosts: proxmox
+  tasks:
+    - name: Setup non subscription update repo
+      ansible.builtin.include_tasks: updates.yml
+
+    - name: Setup PCI passthrough
+      ansible.builtin.include_tasks: pci_passthrough.yml

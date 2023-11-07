@@ -1,0 +1,70 @@
+---
+- name: Enable IOMMU support
+  ansible.builtin.lineinfile:
+    path: /etc/kernel/cmdline
+    line: "amd_iommu=on"
+    create: true
+  register: iommu_support_result
+
+- name: Refresh proxmox boot tool
+  ansible.builtin.command: proxmox-boot-tool refresh
+  when: iommu_support_result.changed
+
+- name: Load VFIO modules at boot
+  ansible.builtin.blockinfile:
+    path: /etc/modules
+    block: |
+      vfio
+      vfio_iommu_type1
+      vfio_pci
+      vfio_virqfd
+    create: true
+  register: vfio_modules_result
+
+- name: Allow unsafe interrupts
+  ansible.builtin.lineinfile:
+    path: /etc/modprobe.d/iommu_unsafe_interrupts.conf
+    line: options vfio_iommu_type1 allow_unsafe_interrupts=1
+    create: true
+    owner: root
+    group: root
+    mode: "0755"
+  register: unsafe_interrupts_result
+
+- name: Ignore msrs
+  ansible.builtin.lineinfile:
+    path: /etc/modprobe.d/kvm.conf
+    line: options kvm ignore_msrs=1
+    create: true
+    owner: root
+    group: root
+    mode: "0755"
+  register: ignore_msrs_result
+
+- name: Blacklist Nvidia graphics drivers
+  ansible.builtin.blockinfile:
+    path: /etc/modprobe.d/blacklist.conf
+    block: |
+      blacklist nouveau
+      blacklist nvidia
+    create: true
+    owner: root
+    group: root
+    mode: "0755"
+  register: blacklist_result
+
+- name: Configure GPU for PCI passthrough
+  ansible.builtin.lineinfile:
+    path: /etc/modprobe.d/vfio.conf
+    line: options vfio-pci ids={{ gpu_hex_id }} disable_vga=1
+    create: true
+    owner: root
+    group: root
+    mode: "0755"
+  register: passthrough_result
+
+- name: Regenerate initramfs
+  ansible.builtin.command: update-initramfs -u -k all
+  when: "vfio_modules_result.changed or unsafe_interrupts_result.changed or
+    ignore_msrs_result.changed or blacklist_result.changed or
+    passthrough_result.changed"
