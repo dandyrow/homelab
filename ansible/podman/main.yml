@@ -1,0 +1,49 @@
+---
+- name: Setup podman environment with protainer
+  hosts: all
+  tasks:
+    - name: Install podman
+      become: true
+      become_method: doas
+      ansible.builtin.package:
+        name:
+          - podman
+          - podman-compose
+          - aardvark-dns
+        state: present
+
+    - name: Start the podman system service
+      ansible.builtin.systemd_service:
+        name: podman.socket
+        enabled: true
+        scope: user
+        state: started
+
+    - name: Create portainer volume
+      containers.podman.podman_volume:
+        name: portainer_data
+        state: present
+
+    - name: Run portainer container
+      containers.podman.podman_container:
+        name: portainer
+        image: docker.io/portainer/portainer-ce
+        ports:
+          - 8000:8000
+          - 9443:9443
+        volume:
+          - "{{ lookup('ansible.builtin.env', 'XDG_RUNTIME_DIR') }}\
+            /podman/podman.sock:/var/run/docker.sock"
+          - portainer_data:/data
+        restart_policy: always
+        state: started
+
+    - name: Allow rootless access to ports below 1024
+      become: true
+      become_method: doas
+      ansible.posix.sysctl:
+        name: net.ipv4.ip_unprivileged_port_start
+        value: 0
+        sysctl_set: true
+        reload: true
+        state: present
