@@ -129,3 +129,9 @@
         ansible_become: true
         ansible_become_user: "{{ user.name }}"
         ansible_become_method: doas
+
+    - name: Remove machjne-id
+      when: remove_machine_id | default(false)
+      ansible.builtin.file:
+        path: /etc/machine-id
+        state: absent

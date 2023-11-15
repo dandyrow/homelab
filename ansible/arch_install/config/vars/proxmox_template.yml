@@ -3,3 +3,5 @@ enable_cloud_init: true
 
 extra_packages:
   - qemu-guest-agent
+
+remove_machine_id: true
