@@ -12,7 +12,7 @@ resource "proxmox_vm_qemu" "docker01" {
   qemu_os = "l26"
 
   os_type = "cloud-init"
-  ipconfig0 = "ip=192.168.0.3/24,gw=192.168.0.1"
+  ipconfig0 = "ip=192.168.0.4/24,gw=192.168.0.1"
   nameserver = "1.1.1.1"
   ciuser = "dandyrow"
   sshkeys = <<EOF
