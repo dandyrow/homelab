@@ -1,54 +1,71 @@
-resource "proxmox_vm_qemu" "docker01" {
+resource "proxmox_virtual_environment_vm" "docker01" {
   name = "docker01"
-  desc = "Host to run docker applications on"
-  target_node = "new-h0ryzen"
+  description = "Host to run docker applications on"
+  tags = ["production"]
+  node_name = "new-h0ryzen"
   
-  clone = "archlinux"
-  full_clone = true
+  clone {
+    vm_id = 900
+    full = true
+  }
 
-  agent = 1
-  onboot = true
+  agent {
+    enabled = true
+  }
+  
+  on_boot = true
   bios = "ovmf"
-  qemu_os = "l26"
 
-  os_type = "cloud-init"
-  ipconfig0 = "ip=192.168.0.4/24,gw=192.168.0.1"
-  nameserver = "1.1.1.1"
-  ciuser = "dandyrow"
-  sshkeys = <<EOF
-  ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIForH9TNaNvQGNBzWXyPdtRGO5xiR2BYQeIKf8mzN2u9 dandyrow@Desktop
-  EOF
+  operating_system {
+    type = "l26"
+  }
 
-  cores = 4
-  sockets = 1
-  cpu = "x86-64-v3"
+  initialization {
+    dns {
+      servers = ["1.1.1.1"]
+    }
 
-  memory = 20480
-  balloon = 1024
+    ip_config {
+      ipv4 {
+        address = "192.168.0.4/24"
+        gateway = "192.168.0.1"
+      }
+    }
 
-  scsihw = "virtio-scsi-pci"
+    user_account {
+      username = "dandyrow"
+    }
+  }
 
-  disk {
-    slot = 0
-    type = "virtio"
-    storage = "local-lvm"
-    size = "500M"
+  keyboard_layout = "en-gb"
+
+  cpu {
+    cores = 4
+    type = "x86-64-v3"
+  }
+
+  memory {
+    dedicated = 20480
+    floating = 1024
   }
 
   disk {
-    slot = 1
-    type = "virtio"
-    storage = "local-lvm"
-    size = "100G"
+    interface = "virtio0"
+    size = 1
+
   }
 
-  network {
+  disk {
+    interface = "virtio1"
+    size = 100
+  }
+
+  network_device {
     model = "virtio"
     bridge = "vmbr0"
   }
 
   vga {
     type = "virtio"
-    memory = 32
   }
 }
