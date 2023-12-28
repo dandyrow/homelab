@@ -26,6 +26,12 @@ packages:
   - sl
   - lf
   - gnupg
+  - yamllint
+  - npm
+  - wget
+  - tree-sitter
+  - fd
+  - wl-clipboard
 
 dotfiles_to_install:
   - git

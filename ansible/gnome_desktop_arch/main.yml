@@ -13,6 +13,7 @@
           - gnome-backgrounds
           - gnome-console
           - gnome-control-center
+          - gnome-remote-desktop
           - gnome-online-accounts
           - gnome-shell
           - gnome-tweaks
@@ -61,7 +62,7 @@
           - org.gnome.clocks
           - org.gnome.Photos
           - org.gnome.SimpleScan
-          - org.mozilla.firefox
+          - io.gitlab.librewolf-community
           - org.mozilla.Thunderbird
           - com.github.tchx84.Flatseal
           - com.mattjakeman.ExtensionManager
