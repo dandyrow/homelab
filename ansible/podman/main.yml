@@ -10,6 +10,7 @@
           - podman
           - podman-compose
           - aardvark-dns
+          - fuse-overlayfs
         state: present
 
     - name: Start the podman system service
