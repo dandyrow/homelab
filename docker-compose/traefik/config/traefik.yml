@@ -1,0 +1,44 @@
+---
+entryPoints:
+  http:
+    address: :80
+    http:
+      redirections:
+        entryPoint:
+          to: https
+          scheme: https
+  https:
+    address: :443
+
+tls:
+  options:
+    default:
+      minVersion: VersionTLS12
+
+certificateResolvers:
+  staging:
+    acme:
+      email: infrastructure@daniellowry.co.uk
+      storage: /ssl-certs/acme.json
+      caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+      dnsChallenge:
+        provider: cloudflare
+        resolvers:
+          - 1.1.1.1:53
+          - 1.0.0.1:53
+  production:
+    acme:
+      email: infrastructure@daniellowry.co.uk
+      storage: /ssl-certs/acme.json
+      dnsChallenge:
+        provider: cloudflare
+        resolvers:
+          - 1.1.1.1:53
+          - 1.0.0.1:53
+
+api:
+  dashboard: true
+
+providers:
+  docker:
+    exposedByDefault: false
