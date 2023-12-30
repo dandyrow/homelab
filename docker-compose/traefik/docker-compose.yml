@@ -10,6 +10,9 @@ services:
       - no-new-privileges:true # Prevents processes inside the container gaining additional privileges.
     networks:
       proxy:
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
     ports:
       - 80:80
       - 443:443
