@@ -15,7 +15,7 @@ tls:
     default:
       minVersion: VersionTLS12
 
-certificateResolvers:
+certificatesResolvers:
   staging:
     acme:
       email: infrastructure@daniellowry.co.uk
