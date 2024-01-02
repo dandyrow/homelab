@@ -34,7 +34,7 @@ services:
       - "traefik.http.routers.dashboard-secure.rule=Host(`traefik.daniellowry.co.uk`)"
       - "traefik.http.routers.dashboard-secure.entrypoints=https"
       - "traefik.http.routers.dashboard-secure.tls=true"
-      - "traefik.http.routers.dashboard-secure.tls.certresolver=staging"
+      - "traefik.http.routers.dashboard-secure.tls.certresolver=production"
       - "traefik.http.routers.dashboard-secure.tls.domains[0].main=daniellowry.co.uk"
       - "traefik.http.routers.dashboard-secure.tls.domains[0].sans=*.daniellowry.co.uk"
       - "traefik.http.routers.dashboard-secure.service=api@internal"
