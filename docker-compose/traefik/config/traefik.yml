@@ -1,14 +1,23 @@
 ---
 entryPoints:
-  http:
+  http-internal:
     address: :80
     http:
       redirections:
         entryPoint:
-          to: https
+          to: https-internal
           scheme: https
-  https:
+  http-external:
+    address: :81
+    http:
+      redirections:
+        entryPoint:
+          to: https-external
+          scheme: https
+  https-internal:
     address: :443
+  https-external:
+    address: :442
 
 tls:
   options:
