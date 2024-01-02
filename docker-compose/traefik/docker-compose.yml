@@ -16,8 +16,10 @@ services:
     ports:
       - 80:80
       - 443:443
-    env_file:
-      - stack.env
+    # env_file:
+      # - stack.env
+    environment:
+      CF_DNS_API_TOKEN: ${CF_DNS_API_TOKEN}
     volumes:
       - traefik-ssl-certs:/ssl-certs
       - /home/dandyrow/podman/traefik/traefik.yml:/traefik.yml:ro
