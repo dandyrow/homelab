@@ -16,8 +16,6 @@ services:
     ports:
       - 80:80
       - 443:443
-    # env_file:
-      # - stack.env
     environment:
       CF_DNS_API_TOKEN: ${CF_DNS_API_TOKEN}
     volumes:
@@ -34,13 +32,10 @@ services:
       - "traefik.http.routers.dashboard-secure.rule=Host(`traefik.daniellowry.co.uk`)"
       - "traefik.http.routers.dashboard-secure.entrypoints=https"
       - "traefik.http.routers.dashboard-secure.tls=true"
-      - "traefik.http.routers.dashboard-secure.tls.certresolver=staging"
+      - "traefik.http.routers.dashboard-secure.tls.certresolver=production"
       - "traefik.http.routers.dashboard-secure.tls.domains[0].main=daniellowry.co.uk"
       - "traefik.http.routers.dashboard-secure.tls.domains[0].sans=*.daniellowry.co.uk"
       - "traefik.http.routers.dashboard-secure.service=api@internal"
-      # - "traefik.http.routers.dashboard-secure.middlewares=auth"
-      # - "traefik.http.middlewares.auth.basicauth.usersfile=/traefik-basic-auth"
-
 
 networks:
   proxy:
