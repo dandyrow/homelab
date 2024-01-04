@@ -11,8 +11,8 @@ services:
     networks:
       proxy:
     dns:
-      - 1.1.1.1
-      - 1.0.0.1
+      - 9.9.9.9
+      - 149.112.112.112
     ports:
       - 80:80
       - 81:81
@@ -28,16 +28,12 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.dashboard.rule=Host(`traefik.daniellowry.co.uk`)"
-      - "traefik.http.routers.dashboard.middlewares=https-redirect"
-      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
-      - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
-      - "traefik.http.routers.dashboard-secure.rule=Host(`traefik.daniellowry.co.uk`)"
-      - "traefik.http.routers.dashboard-secure.entrypoints=https-internal"
-      - "traefik.http.routers.dashboard-secure.tls=true"
-      - "traefik.http.routers.dashboard-secure.tls.certresolver=production"
-      - "traefik.http.routers.dashboard-secure.tls.domains[0].main=daniellowry.co.uk"
-      - "traefik.http.routers.dashboard-secure.tls.domains[0].sans=*.daniellowry.co.uk"
-      - "traefik.http.routers.dashboard-secure.service=api@internal"
+      - "traefik.http.routers.dashboard.entrypoints=https-internal"
+      - "traefik.http.routers.dashboard.tls=true"
+      - "traefik.http.routers.dashboard.tls.certresolver=production"
+      - "traefik.http.routers.dashboard.tls.domains[0].main=daniellowry.co.uk"
+      - "traefik.http.routers.dashboard.tls.domains[0].sans=*.daniellowry.co.uk"
+      - "traefik.http.routers.dashboard.service=api@internal"
 
 networks:
   proxy:

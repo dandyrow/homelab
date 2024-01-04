@@ -1,0 +1,48 @@
+---
+version: "3.5"
+services:
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    restart: unless-stopped
+    dns:
+      - 9.9.9.9
+      - 149.112.112.112
+    ports:
+      - 53:53/tcp
+      - 53:53/udp
+    networks:
+      proxy:
+    volumes:
+      - etc:/etc/pihole/
+      - dnsmasq:/etc/dnsmasq.d/
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.pihole.entrypoints=https-internal
+      - traefik.http.routers.pihole.rule=Host(`pihole.daniellowry.co.uk`)
+      - traefik.http.routers.pihole.tls=true
+      - traefik.http.routers.pihole.service=pihole
+      - traefik.http.services.pihole.loadbalancer.server.port=80
+    environment:
+      TZ: Europe/London
+      WEBPASSWORD_FILE: /run/secrets/pihole-password
+      PIHOLE_DNS_: 9.9.9.9;149.112.112.112;2620:fe::fe;2620:fe::9
+      DNSSEC: true
+      DNS_BOGUS_PRIV: true
+      DNS_FQDN_REQUIRED: true
+      WEBTHEME: default-auto
+      VIRTUAL_HOST: pihole.daniellowry.co.uk
+    secrets:
+      - pihole-password
+
+volumes:
+  etc:
+  dnsmasq:
+
+networks:
+  proxy:
+    external: true
+
+secrets:
+  pihole-password:
+    file: /home/dandyrow/podman/pihole/password
