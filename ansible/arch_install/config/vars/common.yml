@@ -18,7 +18,7 @@ packages:
   - pkgfile
   - starship
   - neofetch
-  - ttf-firacode-nerd
+  - ttf-dejavu-nerd
   - noto-fonts-emoji
   - stow
   - exa
