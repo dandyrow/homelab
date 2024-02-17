@@ -32,6 +32,10 @@ packages:
   - tree-sitter
   - fd
   - wl-clipboard
+  - pipewire
+  - pipewire-alsa
+  - pipewire-jack
+  - pipewire-pulse
 
 dotfiles_to_install:
   - git
